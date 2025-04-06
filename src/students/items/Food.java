@@ -1,6 +1,8 @@
 package students.items;
 
-public class Food {
-
-
+public abstract class Food extends Item {
+    // Constructor that calls the Item constructor
+    public Food(int maturationAge, int deathAge, int monetaryValue) {
+        super(maturationAge, deathAge, monetaryValue);
+    }
 }
