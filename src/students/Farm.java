@@ -1,5 +1,6 @@
 package students;
 
+import students.items.WeatherSystem;
 import students.items.Apples;
 import students.items.Grain;
 import students.items.Item;
@@ -7,9 +8,12 @@ import students.items.Soil;
 import students.items.Food;
 import java.util.Scanner;
 
+
 public class Farm {
     private Field field;
     private int funds;  // Player's balance
+    private WeatherSystem weatherSystem = new WeatherSystem();
+
 
     // Constructor to initialize the Farm with field dimensions and starting funds
     public Farm(int fieldWidth, int fieldHeight, int startingFunds) {
@@ -124,6 +128,8 @@ public class Farm {
 
             // Age the field after each turn
             field.tick();
+         // Trigger a weather event after each turn (random)
+            weatherSystem.triggerWeather(field);
         }
         
         scanner.close();

@@ -146,4 +146,11 @@ public class Field {
             appleCount, grainCount, soilCount, untilledCount, weedCount, totalValue, appleCount, grainCount
         );
     }
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }

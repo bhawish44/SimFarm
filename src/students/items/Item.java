@@ -6,48 +6,56 @@ public abstract class Item {
     private int deathAge;
     private int monetaryValue;
 
-    // Constructor for Item, initializes the properties
+    // Constructor for Item
     public Item(int maturationAge, int deathAge, int monetaryValue) {
-        this.age = 0; // All items start at age 0
+        this.age = 0;
         this.maturationAge = maturationAge;
         this.deathAge = deathAge;
         this.monetaryValue = monetaryValue;
     }
 
-    // Method to tick the item (age it)
+    // Advance the age of the item
     public void tick() {
         age++;
     }
 
-    // Method to set the age of the item
+    // Set a specific age
     public void setAge(int age) {
         this.age = age;
     }
 
-    // Method to check if the item has died (if age is greater than deathAge)
+    // Check if the item has died
     public boolean died() {
         return age > deathAge;
     }
 
-    // Method to get the value of the item
+    // Get the value only if matured
     public int getValue() {
-        if (age >= maturationAge) {
-            return monetaryValue; // Only return value if the item has matured
-        }
-        return 0;
+        return age >= maturationAge ? monetaryValue : 0;
     }
 
-    // Method to compare this item with another object
+    // Compare items
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        
+
         Item item = (Item) obj;
-        return age == item.age && maturationAge == item.maturationAge && 
-               deathAge == item.deathAge && monetaryValue == item.monetaryValue;
+        return age == item.age &&
+               maturationAge == item.maturationAge &&
+               deathAge == item.deathAge &&
+               monetaryValue == item.monetaryValue;
     }
 
-    // Abstract method to get the string representation of the item (implemented by subclasses)
+    // Abstract method for symbol printing
     public abstract String toString();
+
+    // ✅ NEW: Get and set methods for maturationAge (for WeatherSystem drought effect)
+    public int getMaturationAge() {
+        return maturationAge;
+    }
+
+    public void setMaturationAge(int maturationAge) {
+        this.maturationAge = maturationAge;
+    }
 }

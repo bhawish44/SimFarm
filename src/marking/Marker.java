@@ -50,9 +50,30 @@ public class Marker {
 		// Section THREE
 		// uncomment this section once you get to it
 		//remember, your farm should work on varies size fields (assuming all fields are less than 10x10)
+		System.out.println("\n===== SECTION 3 =====");
 		Farm f = new Farm(10, 5, 10);
 		f.run();
 		
-	}
+		// -----------------------
+        // SECTION FOUR – Weather System
+        System.out.println("\n==== SECTION 4: Weather System ====");
 
+        Field weatherTestField = new Field(5, 5);
+        WeatherSystem ws = new WeatherSystem();
+
+        // Optional: plant some apples/grains
+        weatherTestField.plant(2, 2, new Apples());
+        weatherTestField.plant(3, 3, new Grain());
+
+        System.out.println("Before weather:");
+        System.out.println(weatherTestField);
+
+        ws.triggerWeather(weatherTestField); // Random weather event
+
+        System.out.println("After weather:");
+        System.out.println(weatherTestField);
+
+        System.out.println("Summary:");
+        System.out.println(weatherTestField.getSummary());
+    }
 }
