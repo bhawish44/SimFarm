@@ -6,7 +6,7 @@ public abstract class Item {
     private int deathAge;
     private int monetaryValue;
 
-    // Constructor for Item class
+    // Constructor for Item, initializes the properties
     public Item(int maturationAge, int deathAge, int monetaryValue) {
         this.age = 0; // All items start at age 0
         this.maturationAge = maturationAge;
@@ -14,42 +14,40 @@ public abstract class Item {
         this.monetaryValue = monetaryValue;
     }
 
-    // Method to increment age
+    // Method to tick the item (age it)
     public void tick() {
-        this.age++;
+        age++;
     }
 
-    // Set age directly
+    // Method to set the age of the item
     public void setAge(int age) {
         this.age = age;
     }
 
-    // Check if item has died
+    // Method to check if the item has died (if age is greater than deathAge)
     public boolean died() {
-        return this.age > this.deathAge;
+        return age > deathAge;
     }
 
-    // Get value based on maturation age
+    // Method to get the value of the item
     public int getValue() {
-        if (this.age >= this.maturationAge) {
-            return this.monetaryValue;
+        if (age >= maturationAge) {
+            return monetaryValue; // Only return value if the item has matured
         }
         return 0;
     }
 
-    // Getters
-    public int getAge() {
-        return this.age;
+    // Method to compare this item with another object
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Item item = (Item) obj;
+        return age == item.age && maturationAge == item.maturationAge && 
+               deathAge == item.deathAge && monetaryValue == item.monetaryValue;
     }
 
-    public int getMaturationAge() {
-        return this.maturationAge;
-    }
-
-    public int getDeathAge() {
-        return this.deathAge;
-    }
-
-    // Abstract toString method to be implemented in subclasses
+    // Abstract method to get the string representation of the item (implemented by subclasses)
     public abstract String toString();
 }
