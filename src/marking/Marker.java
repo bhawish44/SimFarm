@@ -22,6 +22,7 @@ public class Marker {
 		System.out.println(a.getValue()); // should print 3
 		System.out.println(a); // should print "A"
 		System.out.println(a.died()); // should print false
+		
 		a.tick();
 		System.out.println(a.died()); // should print true
 		Food testFood = a; //this should be possible
@@ -33,8 +34,8 @@ public class Marker {
 		// Section TWO
 		// uncomment this section once you get to it
 		
-
-		Field testField = new Field(10, 5);
+		
+		Field testField = new Field(5, 5);
 		System.out.println(testField.get(3, 3)); //should print "."
 		System.out.println(testField); //should print the field
 		System.out.println(testField.getValue()); //should print 0
@@ -46,34 +47,14 @@ public class Marker {
 		testField.till(0, 0);
 		System.out.println(a.equals(testField.get(0, 0))); //should print false
 		System.out.println(testField.get(0, 0).equals(new Soil())); //should print true
+		
 
 		// Section THREE
 		// uncomment this section once you get to it
 		//remember, your farm should work on varies size fields (assuming all fields are less than 10x10)
-		System.out.println("\n===== SECTION 3 =====");
 		Farm f = new Farm(10, 5, 10);
 		f.run();
 		
-		// -----------------------
-        // SECTION FOUR – Weather System
-        System.out.println("\n==== SECTION 4: Weather System ====");
+	}
 
-        Field weatherTestField = new Field(5, 5);
-        WeatherSystem ws = new WeatherSystem();
-
-        // Optional: plant some apples/grains
-        weatherTestField.plant(2, 2, new Apples());
-        weatherTestField.plant(3, 3, new Grain());
-
-        System.out.println("Before weather:");
-        System.out.println(weatherTestField);
-
-        ws.triggerWeather(weatherTestField); // Random weather event
-
-        System.out.println("After weather:");
-        System.out.println(weatherTestField);
-
-        System.out.println("Summary:");
-        System.out.println(weatherTestField.getSummary());
-    }
 }

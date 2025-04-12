@@ -1,156 +1,139 @@
 package students;
 
-import students.items.Item;
-import students.items.Soil;
-import students.items.Weed;
-import students.items.Food;
-import students.items.UntilledSoil;
-import java.util.Random;
+import students.items.*;
 
 public class Field {
     private Item[][] grid;
-    private int width;
-    private int height;
 
-    // Constructor for Field, initializes with Soil items
-    public Field(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public Field(int height, int width) {
         grid = new Item[height][width];
-
-        // Initialize all grid positions with Soil
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                grid[i][j] = new Soil(); // Set initial state of the field to Soil
+                grid[i][j] = new Soil();  // Initializing with Soil
             }
         }
     }
 
-    // Method to simulate the aging of items in the field
     public void tick() {
-        Random rand = new Random();
-        
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Item item = grid[i][j];
-                item.tick(); // Age the item
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                grid[i][j].tick();  // Increase the age of items
 
-                // If item is Soil, there is a 20% chance it turns into a Weed
-                if (item instanceof Soil && rand.nextInt(100) < 20) {
-                    grid[i][j] = new Weed(); // Convert Soil to Weed 20% of the time
+                // If the item is soil, 20% chance to turn it into a weed
+                if (grid[i][j] instanceof Soil) {
+                    if (Math.random() < 0.2) {
+                        grid[i][j] = new Weed();  // 20% chance to turn into a weed
+                    }
                 }
 
-                // If the item has died, it turns into UntilledSoil
-                if (item.died()) {
-                    grid[i][j] = new UntilledSoil(); // Convert dead items to UntilledSoil
+                // If an item has died, convert it to UntilledSoil
+                if (grid[i][j].died()) {
+                    grid[i][j] = new UntilledSoil();  // Turn into UntilledSoil when the item dies
                 }
             }
         }
     }
 
-    // Method to represent the grid as a string
-    @Override
-    public String toString() {
-        StringBuilder fieldString = new StringBuilder();
-
-        // Print column headers (numbered from 1 to width)
-        fieldString.append("  "); // Add a space at the top for row numbers
-        for (int i = 1; i <= width; i++) {
-            fieldString.append(i).append(" ");  // Print numbers for columns
-        }
-        fieldString.append("\n");
-
-        // Print each row of the field, starting row numbers from 1
-        for (int i = 0; i < height; i++) {
-            fieldString.append(i + 1).append(" ");  // Print row number starting from 1
-            for (int j = 0; j < width; j++) {
-                fieldString.append(grid[i][j].toString()).append(" ");  // Print each item's string representation
-            }
-            fieldString.append("\n");
-        }
-
-        return fieldString.toString(); // Return the complete field as a string
-    }
-
-    // Method to till a specific location and turn it into Soil
     public void till(int x, int y) {
-        if (x >= 0 && x < height && y >= 0 && y < width) {
-            grid[x][y] = new Soil(); // Make the location Soil
+        // x is the column, y is the row now
+        if (grid[y][x] instanceof Weed) {
+            grid[y][x] = new Soil();  // Replacing a weed with soil
+        } else {
+            grid[y][x] = new Soil();  // Till the specified location (if it’s not a weed)
         }
     }
 
-    // Method to get the Item at a specific location
-    public Item get(int x, int y) {
-        if (x >= 0 && x < height && y >= 0 && y < width) {
-            return grid[x][y]; // Return the item at the location
-        }
-        return null;
-    }
-
-    // Method to plant an Item (e.g., Apple or Grain) at a specific location
     public void plant(int x, int y, Item item) {
-        if (x >= 0 && x < height && y >= 0 && y < width && grid[x][y] instanceof Soil) {
-            grid[x][y] = item; // Plant the item in the Soil
+        // x is the column, y is the row now
+        if (grid[y][x] instanceof Soil) {
+            grid[y][x] = item;  // Plant the item at the specified location if it's soil
+        } else {
+            System.out.println("Cannot plant here. Location is not soil.");
         }
     }
 
-    // Method to get the total value of Food items in the field
+    public int harvest(int x, int y) {
+        // x is the column, y is the row now
+        if (grid[y][x] instanceof Food) {
+            Food food = (Food) grid[y][x];
+            if (food.getValue() > 0) {
+                int value = food.getValue();  // Get the value of the matured food
+                grid[y][x] = new Soil();  // Harvest and turn it back into soil
+                System.out.println("Sold '" + food.toString() + "' for $" + value);  // Provide feedback
+                return value;  // Return the correct value of the food item
+            }
+        }
+        System.out.println("Nothing to harvest or the item is not mature yet.");
+        return 0;
+    }
+
+    public void getSummary() {
+        int apples = 0, grain = 0, weeds = 0, soil = 0, untilled = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] instanceof Apples) {
+                    apples++;
+                } else if (grid[i][j] instanceof Grain) {
+                    grain++;
+                } else if (grid[i][j] instanceof Weed) {
+                    weeds++;
+                } else if (grid[i][j] instanceof Soil) {
+                    soil++;
+                } else if (grid[i][j] instanceof UntilledSoil) {
+                    untilled++;
+                }
+            }
+        }
+        System.out.println("Apples:        " + apples);
+        System.out.println("Grain:         " + grain);
+        System.out.println("Soil:          " + soil);
+        System.out.println("Untilled:      " + untilled);
+        System.out.println("Weed:          " + weeds);
+        System.out.println("For a total of $" + (apples * 3 + grain * 2));  // Simple value calculation
+        System.out.println("Total apples created: " + Apples.getGenerationCount());
+        System.out.println("Total grain created: " + Grain.getGenerationCount());
+    }
+
+    // Added get() method to return the item at a specific position
+    public Item get(int x, int y) {
+        return grid[y][x];  // Return the item at the specified position (y is row, x is column)
+    }
+
+    // Added getValue() method to calculate total value of matured items
     public int getValue() {
         int totalValue = 0;
-
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Item item = grid[i][j];
-                if (item instanceof Food) {
-                    totalValue += item.getValue(); // Only matured Food items add value
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] instanceof Food) {
+                    Food food = (Food) grid[i][j];
+                    totalValue += food.getValue();  // Add the value of the matured food
                 }
             }
         }
-
-        return totalValue; // Return total value
+        return totalValue;
     }
 
-    // Method to get a summary of the field (counts of each item type and total value)
-    public String getSummary() {
-        int appleCount = 0;
-        int grainCount = 0;
-        int soilCount = 0;
-        int untilledCount = 0;
-        int weedCount = 0;
-        int totalValue = 0;
+    // Implemented toString() method to return a human-readable field grid with row and column numbers
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        
+        // Add column numbers at the top of the grid
+        sb.append("    ");
+        for (int i = 1; i <= grid[0].length; i++) {
+            sb.append(i).append(" ");
+        }
+        sb.append("\n");
 
-        // Loop through the grid and count different items
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Item item = grid[i][j];
-                
-                if (item instanceof Soil) soilCount++; // Count Soil
-                if (item instanceof UntilledSoil) untilledCount++; // Count UntilledSoil
-                if (item instanceof Weed) weedCount++; // Count Weeds
-
-                // For Food items (Apple, Grain, etc.)
-                if (item instanceof Food) {
-                    if (item instanceof students.items.Apples) {
-                        appleCount++; // Count Apples
-                    } else if (item instanceof students.items.Grain) {
-                        grainCount++; // Count Grains
-                    }
-                    totalValue += item.getValue(); // Only matured Food items add value
-                }
+        // Add row numbers along the left side and display the grid
+        for (int i = 0; i < grid.length; i++) {
+            sb.append(i + 1).append("   ");  // Row number
+            for (int j = 0; j < grid[i].length; j++) {
+                sb.append(grid[i][j].toString()).append(" ");  // Item at each position
             }
+            sb.append("\n");
         }
 
-        // Return the summary in a formatted string
-        return String.format(
-            "Apples:        %d\nGrain:         %d\nSoil:          %d\nUntilled:      %d\nWeed:          %d\nFor a total of $%d\nTotal apples created: %d\nTotal grain created: %d\n",
-            appleCount, grainCount, soilCount, untilledCount, weedCount, totalValue, appleCount, grainCount
-        );
-    }
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+        return sb.toString();
     }
 }
